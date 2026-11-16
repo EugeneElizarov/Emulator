@@ -1,0 +1,49 @@
+# Keil MDK / uVision
+# Per-user project, debugger and layout settings
+**/*.uvoptx
+**/*.uvopt
+**/*.uvguix.*
+**/*.uvgui.*
+
+# Keil build output directories
+**/Objects/
+**/Listings/
+**/DebugConfig/
+
+# Keil compiler / linker output
+*.axf
+*.elf
+*.hex
+*.bin
+*.map
+*.lst
+*.crf
+*.dep
+*.d
+*.o
+*.obj
+*.lnp
+*.plg
+*.iex
+*.sbr
+
+# Temporary files and logs
+*.bak
+*.tmp
+*.log
+
+# STM32CubeIDE build output (if used)
+**/Debug/
+**/Release/
+.metadata/
+.settings/
+
+# OS / editor noise
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Keep project configuration and source files tracked:
+# *.uvprojx, *.ioc, .mxproject, startup and linker files
