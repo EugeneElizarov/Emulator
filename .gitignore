@@ -9,6 +9,7 @@
 **/Objects/
 **/Listings/
 **/DebugConfig/
+**/HR_Emulator/
 
 # Keil compiler / linker output
 *.axf
