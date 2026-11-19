@@ -438,6 +438,16 @@
               <FileType>1</FileType>
               <FilePath>..\Core\Src\messages.c</FilePath>
             </File>
+            <File>
+              <FileName>btn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\btn.c</FilePath>
+            </File>
+            <File>
+              <FileName>led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\led.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
