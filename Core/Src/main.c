@@ -26,6 +26,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_vendor.h"
+#include "led.h"
+#include "btn.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -94,6 +96,8 @@ int main(void)
   MX_USB_PCD_Init();
   /* USER CODE BEGIN 2 */
   USBDV_Init();   /* vendor USB: WinUSB auto-bind, enumeration only */
+  LED_Init();
+  BTN_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -103,6 +107,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    LED_Task();
+    BTN_Task();
   }
   /* USER CODE END 3 */
 }
