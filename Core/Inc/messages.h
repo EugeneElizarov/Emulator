@@ -36,33 +36,42 @@
 #define UINT2INT(ui)					(((union{inf32_t i; uint32_t u;}){.u = (ui)}).i)
 
 
-typedef struct
-{
-	uint8_t ID;
-	union
-	{
-		char cpar8;
-		int8_t ipar8;
-		uint8_t upar8;
-	};
-	union
-	{
-		char cpar16[2];
-		int16_t ipar16;
-		uint16_t upar16;
-	};
-	union
-	{
-		char cpar32[4];
-		uint16_t u16par32[2];
-		int16_t i16u32[2];
-		int32_t ipar32;
-		uint32_t upar32;
-		void *ppar32;
-	};
-} Message_t;
+typedef struct Message_t Message_t;
 
-typedef Message_t *Message;
+struct __attribute__((packed)) Message_t
+{
+  uint8_t msg;
+  union __attribute__((packed))
+  {
+    uint8_t u;
+    int8_t i;
+    char c;
+    unsigned char uc;
+  }param1;
+  union __attribute__((packed))
+  {
+    uint16_t u;
+    int16_t i;
+    uint8_t u8[2];
+    int8_t i8[2];
+    char c[2];
+    unsigned char uc[2];
+  }param2;
+  union __attribute__((packed))
+  {
+    void *p;
+    uint32_t u;
+    int32_t i;
+    uint16_t u16[2];
+    int16_t i16[2];
+    uint8_t u8[4];
+    int8_t i8[4];
+    char c[4];
+    unsigned char uc[4];
+  }param3;
+};
+
+typedef struct Message_t *Message;
 
 typedef bool (* MessageProcessor)(Message message);
 

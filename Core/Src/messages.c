@@ -125,10 +125,10 @@ bool Message_Add(uint8_t ID, uint8_t par1, uint16_t par2, uint32_t par3)
   uint8_t index = _next_msg_index(wmsgindex);
   if (index != rmsgindex)
   {
-	  messages[wmsgindex].ID = ID;
-	  messages[wmsgindex].upar8 = par1;
-	  messages[wmsgindex].upar16 = par2;
-	  messages[wmsgindex].upar32 = par3;
+	  messages[wmsgindex].msg = ID;
+	  messages[wmsgindex].param1.u = par1;
+	  messages[wmsgindex].param2.u = par2;
+	  messages[wmsgindex].param3.u = par3;
 	  wmsgindex = index;
 	  return true;
   }
@@ -165,7 +165,7 @@ void Message_Poll(void)
 		  rmsgindex = _next_msg_index(rmsgindex);
 	  }
 	  else
-		  if (_processor_isactive(current_processor, messages[rmsgindex].ID))
+		  if (_processor_isactive(current_processor, messages[rmsgindex].msg))
 			  current_processor->processor(&messages[rmsgindex]);
   }
 }
