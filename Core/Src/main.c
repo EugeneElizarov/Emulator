@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "usbd_vendor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -93,7 +93,7 @@ int main(void)
   MX_DAC_Init();
   MX_USB_PCD_Init();
   /* USER CODE BEGIN 2 */
-
+  USBDV_Init();   /* vendor USB: WinUSB auto-bind, enumeration only */
   /* USER CODE END 2 */
 
   /* Infinite loop */
