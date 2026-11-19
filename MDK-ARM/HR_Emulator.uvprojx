@@ -426,6 +426,16 @@
               <FileType>1</FileType>
               <FilePath>../Core/Src/usbd_vendor.c</FilePath>
             </File>
+                      <File>
+              <FileName>led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/led.c</FilePath>
+            </File>
+            <File>
+              <FileName>btn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../Core/Src/btn.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
