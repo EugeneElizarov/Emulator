@@ -32,13 +32,14 @@
 
 /* USER CODE END 1 */
 
-/** Configure pins as
-        * Analog
-        * Input
-        * Output
-        * EVENT_OUT
-        * EXTI
-*/
+/**
+ * Configure pins as
+ *        * Analog
+ *        * Input
+ *        * Output
+ *        * EVENT_OUT
+ *        * EXTI
+ */
 void MX_GPIO_Init(void)
 {
 
@@ -55,7 +56,7 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LED1G_Pin|LED1R_Pin|LED2G_Pin|HV_EN_Pin
-                          |LED2R_Pin, GPIO_PIN_RESET);
+                          |LED2R_Pin|HEAT_ON_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GSRb0_Pin|GSRb1_Pin|GSRb2_Pin|GSRb10_Pin
@@ -76,9 +77,9 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED1G_Pin LED1R_Pin LED2G_Pin HV_EN_Pin
-                           LED2R_Pin */
+                           LED2R_Pin HEAT_ON_Pin */
   GPIO_InitStruct.Pin = LED1G_Pin|LED1R_Pin|LED2G_Pin|HV_EN_Pin
-                          |LED2R_Pin;
+                          |LED2R_Pin|HEAT_ON_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -94,12 +95,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : HEAT_ON_Pin */
-  GPIO_InitStruct.Pin = HEAT_ON_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(HEAT_ON_GPIO_Port, &GPIO_InitStruct);
 
 }
 
