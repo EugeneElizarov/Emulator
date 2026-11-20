@@ -33,7 +33,7 @@
 #define FLOAT2UINT(fl)					(((union{float f; uint32_t u;}){.f = (fl)}).u)
 #define UINT2FLOAT(ui)					(((union{float f; uint32_t u;}){.u = (ui)}).f)
 #define INT2UINT(vi)					(((union{int32_t i; uint32_t u;}){.i = (vi)}).u)
-#define UINT2INT(ui)					(((union{inf32_t i; uint32_t u;}){.u = (ui)}).i)
+#define UINT2INT(ui)					(((union{int32_t i; uint32_t u;}){.u = (ui)}).i)
 
 
 typedef struct Message_t Message_t;

@@ -2,22 +2,27 @@
 /**
   ******************************************************************************
   * @file    btn.c
-  * @brief   Debounced button state machine with an event queue.
-  *          Non-blocking, timing based on HAL_GetTick().
+  * @brief   Debounced button state machine. All messages are produced inside
+  *          BTN_Task(), i.e. in the single application context, so no critical
+  *          sections are needed around Message_Add().
+  *
+  *          Message mapping (param1 = button number, param2 = param3 = 0):
+  *            debounced press   -> MESSAGE_KEY_DOWN, MESSAGE_KEY_PRESS
+  *            hold >= 1000 ms   -> MESSAGE_KEY_LONG_PRESS       (once)
+  *            hold >= 5000 ms   -> MESSAGE_KEY_VERY_LONG_PRESS  (once)
+  *            debounced release -> MESSAGE_KEY_UP
+  *          MESSAGE_KEY_CHANGE_STATE is intentionally not used.
   ******************************************************************************
   */
 /* USER CODE END Header */
 
 #include "btn.h"
 #include "main.h"
+#include "messages.h"
 
 static uint8_t  s_raw_prev, s_cnt, s_stable;
-static uint8_t  s_long_sent, s_xlong_sent;
+static uint8_t  s_long_sent, s_vlong_sent;
 static uint32_t s_t_press, s_last_sample;
-
-static btn_evt_t s_q[BTN_QUEUE_LEN];
-static uint8_t   s_head, s_tail, s_used;
-static uint32_t  s_ovf;
 
 static uint8_t btn_raw(void)
 {
@@ -25,60 +30,22 @@ static uint8_t btn_raw(void)
     return (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == lvl) ? 1u : 0u;
 }
 
-static uint16_t btn_hold(uint32_t now)
+/* param1 = button number; param2 and param3 are not used for key messages.
+   Queue overflow is not handled at this level. */
+static void btn_post(uint8_t id)
 {
-    uint32_t h = now - s_t_press;
-    return (uint16_t)((h > 0xFFFFu) ? 0xFFFFu : h);
-}
-
-/* On overflow the oldest event is displaced: recent events matter more for UI. */
-static void btn_push(btn_event_t type, uint16_t hold)
-{
-    uint32_t primask = __get_PRIMASK();
-    __disable_irq();
-    if (s_used >= BTN_QUEUE_LEN)
-    {
-        s_head = (uint8_t)((s_head + 1u) % BTN_QUEUE_LEN);
-        s_used--;
-        s_ovf++;
-    }
-    s_q[s_tail].type    = type;
-    s_q[s_tail].hold_ms = hold;
-    s_tail = (uint8_t)((s_tail + 1u) % BTN_QUEUE_LEN);
-    s_used++;
-    __set_PRIMASK(primask);
-}
-
-bool BTN_Pop(btn_evt_t *out)
-{
-    uint32_t primask;
-    bool ok;
-
-    if (out == NULL) { return false; }
-
-    primask = __get_PRIMASK();
-    __disable_irq();
-    ok = (s_used != 0u);
-    if (ok)
-    {
-        *out = s_q[s_head];
-        s_head = (uint8_t)((s_head + 1u) % BTN_QUEUE_LEN);
-        s_used--;
-    }
-    __set_PRIMASK(primask);
-    return ok;
+    (void)Message_Add(id, BTN_NUMBER, 0u, 0u);
 }
 
 void BTN_Init(void)
 {
     s_raw_prev    = btn_raw();
     s_cnt         = 0u;
-    s_stable      = 0u;   /* held at boot -> PRESS is reported after 20 ms */
+    s_stable      = 0u;   /* held at boot -> DOWN/PRESS are reported after 20 ms */
     s_long_sent   = 0u;
-    s_xlong_sent  = 0u;
+    s_vlong_sent  = 0u;
     s_t_press     = 0u;
     s_last_sample = HAL_GetTick();
-    s_head = 0u; s_tail = 0u; s_used = 0u; s_ovf = 0u;
 }
 
 void BTN_Task(void)
@@ -99,14 +66,15 @@ void BTN_Task(void)
         s_stable = raw;
         if (raw != 0u)
         {
-            s_t_press = now;
-            s_long_sent = 0u;
-            s_xlong_sent = 0u;
-            btn_push(BTN_EV_PRESS, 0u);
+            s_t_press    = now;
+            s_long_sent  = 0u;
+            s_vlong_sent = 0u;
+            btn_post(MESSAGE_KEY_DOWN);
+            btn_post(MESSAGE_KEY_PRESS);
         }
         else
         {
-            btn_push(BTN_EV_RELEASE, btn_hold(now));
+            btn_post(MESSAGE_KEY_UP);
         }
     }
 
@@ -116,17 +84,15 @@ void BTN_Task(void)
         if ((s_long_sent == 0u) && (h >= BTN_LONG_MS))
         {
             s_long_sent = 1u;
-            btn_push(BTN_EV_LONG, (uint16_t)BTN_LONG_MS);
+            btn_post(MESSAGE_KEY_LONG_PRESS);
         }
-        if ((s_xlong_sent == 0u) && (h >= BTN_XLONG_MS))
+        if ((s_vlong_sent == 0u) && (h >= BTN_VLONG_MS))
         {
-            s_xlong_sent = 1u;
-            btn_push(BTN_EV_XLONG, (uint16_t)BTN_XLONG_MS);
+            s_vlong_sent = 1u;
+            btn_post(MESSAGE_KEY_VERY_LONG_PRESS);
         }
     }
 }
 
-uint8_t  BTN_Pending(void)   { return s_used; }
 bool     BTN_IsPressed(void) { return (s_stable != 0u); }
-uint32_t BTN_Overflows(void) { return s_ovf; }
 uint32_t BTN_HoldMs(void)    { return (s_stable != 0u) ? (HAL_GetTick() - s_t_press) : 0u; }

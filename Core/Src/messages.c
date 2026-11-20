@@ -112,12 +112,15 @@ static uint8_t _next_msg_index(uint8_t index)
 	return index;
 }
 
+static ProcessorDesc *current_processor = NULL;
+
 void Message_Init(void)
 {
 	memset(message_processor_buffer, 0, sizeof(message_processor_buffer));
 	memset(processors, 0, sizeof(processors));
 	wmsgindex = 0;
 	rmsgindex = 0;
+	current_processor = NULL;
 }
 
 bool Message_Add(uint8_t ID, uint8_t par1, uint16_t par2, uint32_t par3)
@@ -140,7 +143,6 @@ bool Message_AddPtr(uint8_t ID, uint8_t par1, uint16_t par2, void *par3)
 	return Message_Add(ID, par1, par2, (uint32_t)par3);
 }
 
-static ProcessorDesc * current_processor = NULL;
 
 static bool _processor_isactive(ProcessorDesc * processor, uint8_t msgID)
 {

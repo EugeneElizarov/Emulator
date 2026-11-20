@@ -28,6 +28,7 @@
 #include "usbd_vendor.h"
 #include "led.h"
 #include "btn.h"
+#include "messages.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -95,6 +96,7 @@ int main(void)
   MX_DAC_Init();
   MX_USB_PCD_Init();
   /* USER CODE BEGIN 2 */
+  Message_Init();
   USBDV_Init();   /* vendor USB: WinUSB auto-bind, enumeration only */
   LED_Init();
   BTN_Init();
@@ -109,6 +111,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
     LED_Task();
     BTN_Task();
+    Message_Poll();
   }
   /* USER CODE END 3 */
 }

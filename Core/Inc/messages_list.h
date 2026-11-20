@@ -49,7 +49,7 @@ typedef enum
 
 #define MESSAGE_BLOCK_START_ID(block_name)		MESSAGE_##block_name##_START_ID
 #define MESSAGE_BLOCK_END_ID(block_name)		MESSAGE_##block_name##_LAST_ID
-#define MESSAGE_BLOCK_SIZE(block_name)			(MESSAGE_BLOCK_END_ID(block_name) - MESSAGE_BLOCK_START_ID(block_name))
+#define MESSAGE_BLOCK_SIZE(block_name)			(MESSAGE_BLOCK_END_ID(block_name) - MESSAGE_BLOCK_START_ID(block_name) + 1)
 #define MESSAGE_BLOCK_ASSERT(block_name, MSG)	(((MSG) >= MESSAGE_BLOCK_START_ID(block_name)) && ((MSG) <= MESSAGE_BLOCK_END_ID(block_name)))
 
 #endif /* VENDOR_SPI_DEMO_MESSAGES_LIST_H_ */

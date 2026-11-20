@@ -2,7 +2,8 @@
 /**
   ******************************************************************************
   * @file    btn.h
-  * @brief   KEY button: debounce + press / long / extra-long / release events.
+  * @brief   KEY button: debounce and message generation inside the poll function.
+  *          Messages are added to the pipeline from the application context only.
   ******************************************************************************
   */
 /* USER CODE END Header */
@@ -16,29 +17,17 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
-#define BTN_SAMPLE_MS     5u      /* polling period */
-#define BTN_DEBOUNCE_N    4u      /* 4 identical samples = 20 ms of stable state */
+#define BTN_NUMBER        0u     /* button index passed in Message param1 */
+#define BTN_SAMPLE_MS     5u     /* polling period */
+#define BTN_DEBOUNCE_N    4u     /* 4 identical samples = 20 ms of stable state */
 #define BTN_LONG_MS       1000u
-#define BTN_XLONG_MS      5000u
-#define BTN_QUEUE_LEN     8u
-#define BTN_ACTIVE_LEVEL  0u      /* button to GND: pressed = 0 (GPIO_PIN_RESET) */
-
-typedef enum {
-    BTN_EV_NONE = 0, BTN_EV_PRESS, BTN_EV_RELEASE, BTN_EV_LONG, BTN_EV_XLONG
-} btn_event_t;
-
-typedef struct {
-    btn_event_t type;
-    uint16_t    hold_ms;   /* RELEASE: actual hold time; LONG/XLONG: the threshold */
-} btn_evt_t;
+#define BTN_VLONG_MS      5000u
+#define BTN_ACTIVE_LEVEL  0u     /* button to GND: pressed = 0 (GPIO_PIN_RESET) */
 
 void     BTN_Init(void);
-void     BTN_Task(void);              /* call from main loop, timing is internal */
-bool     BTN_Pop(btn_evt_t *out);     /* false when the queue is empty */
-uint8_t  BTN_Pending(void);
+void     BTN_Task(void);         /* poll: debounce + Message_Add, call from main loop */
 bool     BTN_IsPressed(void);
 uint32_t BTN_HoldMs(void);
-uint32_t BTN_Overflows(void);         /* events displaced by queue overflow */
 
 #ifdef __cplusplus
 }
