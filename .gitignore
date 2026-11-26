@@ -27,6 +27,7 @@
 *.plg
 *.iex
 *.sbr
+*JLink*
 
 # Temporary files and logs
 *.bak
